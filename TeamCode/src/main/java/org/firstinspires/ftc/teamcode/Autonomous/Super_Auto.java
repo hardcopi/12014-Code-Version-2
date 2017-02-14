@@ -15,7 +15,7 @@ public class Super_Auto extends LinearOpMode {
     HardwareFireWiresBot robot = new HardwareFireWiresBot();
     long start_time;
     private ElapsedTime runtime = new ElapsedTime();
-
+    static final double SHOOTER_POWER = .25;
     private String particlePref;
     private String beaconPref;
     private String capBallPref;
@@ -56,27 +56,58 @@ public class Super_Auto extends LinearOpMode {
         telemetry.addLine("Parking: " + parkingPref);
         telemetry.addLine("Alliance: " + alliance);
         telemetry.update();
+        //Initial stuff
 
+        encoderDrive(DRIVE_SPEED, 5, 5, 10.0);      /* Drive forward */
+        encoderDrive(TURN_SPEED,   -12, 12, 4.0);   /* Turn */
+        encoderDrive(DRIVE_SPEED,  8, 8, 4.0);      /* Drive forward */
+        if(particlePref.equals("Do not shoot any particles")){
+            //do beacon code
+
+        }
+        if(particlePref.equals("Shoot 1 particle")){
+            Robot_Methods.driveForSecondsAtPower(robot, -.25, 1.5);
+            Robot_Methods.shootOneBall(robot, SHOOTER_POWER);
+            Robot_Methods.waitSeconds(1);
+        }
+        else if (particlePref.equals("Shoot 2 particles")){
+            shoot2();
+        }
         switch (alliance) {
             case "Blue Alliance":
-                encoderDrive(DRIVE_SPEED, 5, 5, 10.0);      /* Drive forward */
-                encoderDrive(TURN_SPEED,   -12, 12, 4.0);   /* Turn */
-                encoderDrive(DRIVE_SPEED,  8, 8, 4.0);      /* Drive forward */
-                sleep(10000);
+
+
                 break;
             case "Red Alliance":
-                encoderDrive(DRIVE_SPEED, 5, 5, 10.0);      /* Drive forward */
-                encoderDrive(TURN_SPEED,   -12, 12, 4.0);   /* Turn */
-                encoderDrive(DRIVE_SPEED,  8, 8, 4.0);      /* Drive forward */
-                sleep(10000);
+
                 break;
 
         }
+
         // Stop all motors
         robot.leftMotor.setPower(0);
         robot.rightMotor.setPower(0);
     }
 
+    public void shoot2(){
+        robot.leftShooter.setPower(SHOOTER_POWER);
+        robot.rightShooter.setPower(SHOOTER_POWER);
+        sleep(2000);
+        robot.shootServo.setPosition(-1);
+        sleep(500);
+        robot.shootServo.setPosition(1);
+        robot.leftShooter.setPower(0);
+        robot.rightShooter.setPower(0);
+        sleep(1000);
+        /* Fire again! */
+        robot.shootServo.setPosition(1);
+        sleep(2000);
+        robot.leftShooter.setPower(SHOOTER_POWER);
+        robot.rightShooter.setPower(SHOOTER_POWER);
+        sleep(1000);
+        robot.shootServo.setPosition(-1);
+        sleep(1000);
+    }
     private void getAutonomousPrefs()
     {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(hardwareMap.appContext);
