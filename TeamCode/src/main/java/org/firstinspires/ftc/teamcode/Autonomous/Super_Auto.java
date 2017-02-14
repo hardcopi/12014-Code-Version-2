@@ -63,6 +63,7 @@ public class Super_Auto extends LinearOpMode {
         encoderDrive(DRIVE_SPEED,  8, 8, 4.0);      /* Drive forward */
         if(particlePref.equals("Do not shoot any particles")){
             //do beacon code
+            //
 
         }
         if(particlePref.equals("Shoot 1 particle")){
