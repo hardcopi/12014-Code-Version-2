@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.HardwareFireWiresBot;
 import org.firstinspires.ftc.teamcode.R;
-
+@Disabled
 @Autonomous(name = "Beacon Pusher Blue", group = "FireBot")
 public class Beacon_Pusher_Blue extends LinearOpMode {
     HardwareFireWiresBot robot = new HardwareFireWiresBot();
@@ -17,7 +18,6 @@ public class Beacon_Pusher_Blue extends LinearOpMode {
     static final double THRESHOLD_REFLECTANCE = (LINE_REFLECTANCE + FLOOR_REFLECTANCE) / 2;
     static final double COLOR_THRESHOLD = 2;
     double reflectance = 0.0;
-
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);

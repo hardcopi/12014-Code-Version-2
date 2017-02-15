@@ -27,8 +27,8 @@ public class Super_Auto extends LinearOpMode {
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double DRIVE_SPEED = 0.15;
-    static final double TURN_SPEED = 0.15;
+    static final double DRIVE_SPEED = 0.25;
+    static final double TURN_SPEED = 0.25;
 
     static final double FLOOR_REFLECTANCE = 0.2;
     static final double LINE_REFLECTANCE = 0.04;
@@ -58,29 +58,116 @@ public class Super_Auto extends LinearOpMode {
         telemetry.update();
         //Initial stuff
 
-        encoderDrive(DRIVE_SPEED, 5, 5, 10.0);      /* Drive forward */
-        encoderDrive(TURN_SPEED,   -12, 12, 4.0);   /* Turn */
-        encoderDrive(DRIVE_SPEED,  8, 8, 4.0);      /* Drive forward */
-        if(particlePref.equals("Do not shoot any particles")){
-            //do beacon code
-            //
+//        encoderDrive(DRIVE_SPEED, 10, 10, 6.0);      /* Drive forward */
+//        sleep(1000);
+//        encoderDrive(TURN_SPEED, 4, -2, 2.0);
+//        sleep(1000);
+//        encoderDrive(TURN_SPEED,   -2, 6, 4.0);   /* Turn 90 degree turn*/
+//        encoderDrive(DRIVE_SPEED,  10, 10, 2.0);      /* Drive forward */
+//        telemetry.addData("Red", robot.color.red());
+//        telemetry.addData("Blue", robot.color.blue());
+//        telemetry.update();
 
-        }
-        if(particlePref.equals("Shoot 1 particle")){
-            Robot_Methods.driveForSecondsAtPower(robot, -.25, 1.5);
-            Robot_Methods.shootOneBall(robot, SHOOTER_POWER);
-            Robot_Methods.waitSeconds(1);
-        }
-        else if (particlePref.equals("Shoot 2 particles")){
-            shoot2();
-        }
+//        if(particlePref.equals("Do not shoot any particles")){
+//            //do beacon code
+//            //
+//
+//        }
+//        if(particlePref.equals("Shoot 1 particle")){
+//            Robot_Methods.driveForSecondsAtPower(robot, -.25, 1.5);
+//            Robot_Methods.shootOneBall(robot, SHOOTER_POWER);
+//            Robot_Methods.waitSeconds(1);
+//        }
+//        else if (particlePref.equals("Shoot 2 particles")){
+//            shoot2();
+//        }
         switch (alliance) {
             case "Blue Alliance":
+                encoderDrive(DRIVE_SPEED, 10, 10, 6.0);      /* Drive forward */
+                sleep(1000);
+                encoderDrive(TURN_SPEED, 4, -2, 2.0);
+                sleep(1000);
+                encoderDrive(DRIVE_SPEED,  10, 10, 2.0);      /* Drive forward */
+                telemetry.addData("Red", robot.color.red());
+                telemetry.addData("Blue", robot.color.blue());
+                telemetry.update();
 
+                boolean blue = false;
+                if (robot.color.blue() > 0) {
+                    blue = true;
+                } else {
+                    blue = false;
+                }
+//                while(blue == false) {
+//                    robot.leftMotor.setPower(-DRIVE_SPEED);
+//                    robot.rightMotor.setPower(-DRIVE_SPEED);
+//                    sleep(300);
+//                    robot.leftMotor.setPower(DRIVE_SPEED);
+//                    robot.rightMotor.setPower(DRIVE_SPEED);
+//                    sleep(300);
+//                    robot.leftMotor.setPower(-DRIVE_SPEED);
+//                    robot.rightMotor.setPower(-DRIVE_SPEED);
+//                    sleep(300);
+//                    robot.leftMotor.setPower(0);
+//                    robot.rightMotor.setPower(0);
+//                    if (robot.color.blue() > 0) {
+//                        blue = true;
+//                        sleep(5000);
+//                    }
+//                }
+                while(!blue) {
+                    sleep(1000);
+                    if (robot.color.blue() != 0) {
+                        telemetry.addData("Say", "FOUND BLUE!!!!");
+                        telemetry.update();
+                        sleep(100);
+                        blue = true;
+                    }
+                    else{
+                        telemetry.addData("Red", robot.color.red());
+                        telemetry.addData("Blue", robot.color.blue());
+                        telemetry.update();
+                        sleep(100);
+                    }
+                    robot.leftMotor.setPower(DRIVE_SPEED);
+                    robot.rightMotor.setPower(DRIVE_SPEED);
+                    sleep(1000);
+                    robot.leftMotor.setPower(0);
+                    robot.rightMotor.setPower(0);
+                    sleep(5000);
+                    robot.leftMotor.setPower(-DRIVE_SPEED);
+                    robot.rightMotor.setPower(-DRIVE_SPEED);
+                    sleep(1500);
+
+                }
+                robot.leftMotor.setPower(-DRIVE_SPEED);
+                robot.rightMotor.setPower(-DRIVE_SPEED);
+                sleep(3000);
 
                 break;
             case "Red Alliance":
-
+                encoderDrive(DRIVE_SPEED, 10, 10, 6.0);      /* Drive forward */
+                sleep(1000);
+                encoderDrive(TURN_SPEED, -2, 4, 2.0);
+                sleep(1000);
+                encoderDrive(DRIVE_SPEED,  10, 10, 2.0);      /* Drive forward */
+                telemetry.addData("Red", robot.color.red());
+                telemetry.addData("Blue", robot.color.blue());
+                telemetry.update();
+                while (robot.color.red() < COLOR_THRESHOLD) {
+                    robot.leftMotor.setPower((DRIVE_SPEED * 2));
+                    robot.rightMotor.setPower((DRIVE_SPEED * 2));
+                    sleep(1000);
+                    telemetry.addData("Blue", robot.color.blue());
+                    telemetry.addData("Red", robot.color.red());
+                    telemetry.update();
+                    robot.leftMotor.setPower(-DRIVE_SPEED);
+                    robot.rightMotor.setPower(-DRIVE_SPEED);
+                    sleep(500);
+                    robot.leftMotor.setPower(0);
+                    robot.rightMotor.setPower(0);
+                    sleep(6000);
+                }
                 break;
 
         }
@@ -88,6 +175,7 @@ public class Super_Auto extends LinearOpMode {
         // Stop all motors
         robot.leftMotor.setPower(0);
         robot.rightMotor.setPower(0);
+
     }
 
     public void shoot2(){
