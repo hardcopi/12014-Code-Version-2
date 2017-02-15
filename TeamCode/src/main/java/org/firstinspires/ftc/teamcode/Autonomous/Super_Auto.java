@@ -119,7 +119,7 @@ public class Super_Auto extends LinearOpMode {
 //                        sleep(5000);
 //                    }
 //                }
-                while(bluecolor ==0) {
+                while(bluecolor ==0 && opModeIsActive()) {
                     sleep(1000);
                     updateColors();
 
@@ -241,7 +241,7 @@ public class Super_Auto extends LinearOpMode {
                         robot.leftMotor.getCurrentPosition(),
                         robot.rightMotor.getCurrentPosition());
                 telemetry.update();
-            }
+            }//
 
             // Stop all motion;
             robot.leftMotor.setPower(0);
