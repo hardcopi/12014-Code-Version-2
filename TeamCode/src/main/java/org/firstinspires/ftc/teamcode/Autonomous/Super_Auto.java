@@ -115,7 +115,7 @@ public class Super_Auto extends LinearOpMode {
 //                        sleep(5000);
 //                    }
 //                }
-                while(!blue) {
+                while(!blue && opModeIsActive()) {
                     sleep(1000);
                     if (robot.color.blue() != 0) {
                         telemetry.addData("Say", "FOUND BLUE!!!!");
