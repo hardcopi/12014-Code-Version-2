@@ -36,6 +36,9 @@ public class Super_Auto extends LinearOpMode {
     static final double COLOR_THRESHOLD = 2;
     double reflectance = 0.0;
 
+    static int bluecolor;
+    static int redcolor;
+
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
@@ -81,6 +84,7 @@ public class Super_Auto extends LinearOpMode {
 //        else if (particlePref.equals("Shoot 2 particles")){
 //            shoot2();
 //        }
+        updateColors();
         switch (alliance) {
             case "Blue Alliance":
                 encoderDrive(DRIVE_SPEED, 10, 10, 6.0);      /* Drive forward */
@@ -93,7 +97,7 @@ public class Super_Auto extends LinearOpMode {
                 telemetry.update();
 
                 boolean blue = false;
-                if (robot.color.blue() > 0) {
+                if (getBlueColor() > 0) {
                     blue = true;
                 } else {
                     blue = false;
@@ -115,20 +119,10 @@ public class Super_Auto extends LinearOpMode {
 //                        sleep(5000);
 //                    }
 //                }
-                while(!blue && opModeIsActive()) {
+                while(bluecolor ==0 && opModeIsActive()) {
                     sleep(1000);
-                    if (robot.color.blue() != 0) {
-                        telemetry.addData("Say", "FOUND BLUE!!!!");
-                        telemetry.update();
-                        sleep(100);
-                        blue = true;
-                    }
-                    else{
-                        telemetry.addData("Red", robot.color.red());
-                        telemetry.addData("Blue", robot.color.blue());
-                        telemetry.update();
-                        sleep(100);
-                    }
+                    updateColors();
+
                     robot.leftMotor.setPower(DRIVE_SPEED);
                     robot.rightMotor.setPower(DRIVE_SPEED);
                     sleep(1000);
@@ -138,6 +132,8 @@ public class Super_Auto extends LinearOpMode {
                     robot.leftMotor.setPower(-DRIVE_SPEED);
                     robot.rightMotor.setPower(-DRIVE_SPEED);
                     sleep(1500);
+                    robot.leftMotor.setPower(0);
+                    robot.rightMotor.setPower(0);
 
                 }
                 robot.leftMotor.setPower(-DRIVE_SPEED);
@@ -245,7 +241,7 @@ public class Super_Auto extends LinearOpMode {
                         robot.leftMotor.getCurrentPosition(),
                         robot.rightMotor.getCurrentPosition());
                 telemetry.update();
-            }
+            }//
 
             // Stop all motion;
             robot.leftMotor.setPower(0);
@@ -258,4 +254,15 @@ public class Super_Auto extends LinearOpMode {
             //  sleep(250);   // optional pause after each move
         }
     }
+    public int getRedColor(){
+        return robot.color.red();
+    }
+    public int getBlueColor(){
+        return robot.color.blue();
+    }
+    public  void updateColors(){
+        bluecolor = robot.color.blue();
+        redcolor = robot.color.red();
+    }
+
 }
