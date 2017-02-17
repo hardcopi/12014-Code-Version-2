@@ -75,9 +75,6 @@ public class Super_Auto extends LinearOpMode {
                         bumpBeaconBlue();
                     }
                 }
-
-
-
                 break;
             case "Red Alliance":
                 encoderDrive(DRIVE_SPEED, 10, 10, 6.0);      /* Drive forward */

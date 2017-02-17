@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.robot.Robot;
 
 import org.firstinspires.ftc.teamcode.HardwareFireWiresBot;
-
+@Disabled
 @Autonomous(name = "Sensor Auto", group = "FireBot")
 public class Sensor_Auto extends LinearOpMode {
     HardwareFireWiresBot robot = new HardwareFireWiresBot();
