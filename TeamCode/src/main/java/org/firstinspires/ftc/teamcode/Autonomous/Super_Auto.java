@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.HardwareFireWiresBot;
@@ -27,7 +28,7 @@ public class Super_Auto extends LinearOpMode {
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double DRIVE_SPEED = 0.25;
+    static final double DRIVE_SPEED = 0.30;
     static final double TURN_SPEED = 0.25;
 
     static final double FLOOR_REFLECTANCE = 0.2;
@@ -61,37 +62,65 @@ public class Super_Auto extends LinearOpMode {
         telemetry.update();
         //Initial stuff
 
-//        encoderDrive(DRIVE_SPEED, 10, 10, 6.0);      /* Drive forward */
-//        sleep(1000);
-//        encoderDrive(TURN_SPEED, 4, -2, 2.0);
-//        sleep(1000);
-//        encoderDrive(TURN_SPEED,   -2, 6, 4.0);   /* Turn 90 degree turn*/
-//        encoderDrive(DRIVE_SPEED,  10, 10, 2.0);      /* Drive forward */
-//        telemetry.addData("Red", robot.color.red());
-//        telemetry.addData("Blue", robot.color.blue());
-//        telemetry.update();
-
-//        if(particlePref.equals("Do not shoot any particles")){
-//            //do beacon code
-//            //
-//
-//        }
-//        if(particlePref.equals("Shoot 1 particle")){
-//            Robot_Methods.driveForSecondsAtPower(robot, -.25, 1.5);
-//            Robot_Methods.shootOneBall(robot, SHOOTER_POWER);
-//            Robot_Methods.waitSeconds(1);
-//        }
-//        else if (particlePref.equals("Shoot 2 particles")){
-//            shoot2();
-//        }
         updateColors();
         switch (alliance) {
             case "Blue Alliance":
-                encoderDrive(DRIVE_SPEED, 10, 10, 6.0);      /* Drive forward */
-                sleep(1000);
-                encoderDrive(TURN_SPEED, 4, -2, 2.0);
-                sleep(1000);
-                encoderDrive(DRIVE_SPEED,  10, 10, 2.0);      /* Drive forward */
+
+                if(!particlePref.equalsIgnoreCase(("Do not shoot any particles"))) {
+                    encoderDrive(DRIVE_SPEED, 4.5, 4.5, 6);      /* Drive forward */
+                    sleep(500);
+                    encoderDrive(TURN_SPEED, -.8, 1, 2.0);
+                    sleep(500);
+                    Robot_Methods.shootOneBall(robot,.25);
+                    sleep(1500);
+                    Robot_Methods.shootOneBall(robot,.25);
+                    sleep(1000);
+                    encoderDrive(TURN_SPEED, 1, -1, 2.0);
+                    sleep(500);
+                    encoderDrive(DRIVE_SPEED,5, 5, 6);
+                    sleep(500);
+                    encoderDrive(TURN_SPEED, 4, -2, 2.0);
+                    sleep(1000);
+                    encoderDrive(DRIVE_SPEED,  10, 10, 2.0);
+                    telemetry.addData("Red", robot.color.red());
+                    telemetry.addData("Blue", robot.color.blue());
+                    telemetry.update();
+                    hitBeacon();
+                }
+                if(!beaconPref.equalsIgnoreCase("Do not activate any beacons")){
+//                    encoderDrive(DRIVE_SPEED, 9.8, 9.8, 6);      /* Drive forward */
+//                    sleep(1000);
+//                    encoderDrive(TURN_SPEED, 4, -2, 2.0);
+//                    sleep(1000);
+//                    encoderDrive(DRIVE_SPEED,  10, 10, 2.0);      /* Drive forward */
+                    encoderDrive(DRIVE_SPEED,4 , 4, 6);      /* Drive forward */
+                    sleep(500);
+                    encoderDrive(TURN_SPEED, 2, -1, 2.0);
+                    sleep(500);
+                    boolean drive = true;
+                    robot.leftMotor.setPower(-DRIVE_SPEED);
+                    robot.rightMotor.setPower(-DRIVE_SPEED);
+                    while (drive && opModeIsActive()) {
+                        // Display the light level while we are looking for the line
+                        reflectance = robot.ods.getLightDetected();
+                        telemetry.addData("Light Level", reflectance);
+                        telemetry.update();
+
+                        // If the sensor is on the line
+                        // only the right motor rotates to move it off the line
+                        if (reflectance > THRESHOLD_REFLECTANCE) {
+                            robot.leftMotor.setPower(0);
+                            robot.rightMotor.setPower(0);
+                            drive = false;
+                        }
+                    }
+
+                    sleep(500);
+                    hitBeacon();
+
+                }
+                //encoderDrive(DRIVE_SPEED,  10, 10, 2.0);      /* Drive forward */
+
                 telemetry.addData("Red", robot.color.red());
                 telemetry.addData("Blue", robot.color.blue());
                 telemetry.update();
@@ -102,43 +131,10 @@ public class Super_Auto extends LinearOpMode {
                 } else {
                     blue = false;
                 }
-//                while(blue == false) {
-//                    robot.leftMotor.setPower(-DRIVE_SPEED);
-//                    robot.rightMotor.setPower(-DRIVE_SPEED);
-//                    sleep(300);
-//                    robot.leftMotor.setPower(DRIVE_SPEED);
-//                    robot.rightMotor.setPower(DRIVE_SPEED);
-//                    sleep(300);
-//                    robot.leftMotor.setPower(-DRIVE_SPEED);
-//                    robot.rightMotor.setPower(-DRIVE_SPEED);
-//                    sleep(300);
-//                    robot.leftMotor.setPower(0);
-//                    robot.rightMotor.setPower(0);
-//                    if (robot.color.blue() > 0) {
-//                        blue = true;
-//                        sleep(5000);
-//                    }
-//                }
-                while(bluecolor ==0 && opModeIsActive()) {
-                    sleep(1000);
-                    updateColors();
+                //hitBeacon();
 
-                    robot.leftMotor.setPower(DRIVE_SPEED);
-                    robot.rightMotor.setPower(DRIVE_SPEED);
-                    sleep(1000);
-                    robot.leftMotor.setPower(0);
-                    robot.rightMotor.setPower(0);
-                    sleep(5000);
-                    robot.leftMotor.setPower(-DRIVE_SPEED);
-                    robot.rightMotor.setPower(-DRIVE_SPEED);
-                    sleep(1500);
-                    robot.leftMotor.setPower(0);
-                    robot.rightMotor.setPower(0);
 
-                }
-                robot.leftMotor.setPower(-DRIVE_SPEED);
-                robot.rightMotor.setPower(-DRIVE_SPEED);
-                sleep(3000);
+
 
                 break;
             case "Red Alliance":
@@ -263,6 +259,42 @@ public class Super_Auto extends LinearOpMode {
     public  void updateColors(){
         bluecolor = robot.color.blue();
         redcolor = robot.color.red();
+    }
+    public void hitBeacon(){
+        while(opModeIsActive()) {
+            sleep(1000);
+            bluecolor = robot.color.blue();
+            telemetry.addData("Red", bluecolor);
+            telemetry.addData("Blue", robot.color.blue());
+            telemetry.update();
+            Robot_Methods.driveForSecondsAtPower(robot, -DRIVE_SPEED, .5);
+            if(bluecolor > 0){
+                telemetry.addData("Found!", robot.color.blue());
+                telemetry.update();
+                Robot_Methods.driveForSecondsAtPower(robot, DRIVE_SPEED, 1);
+                sleep(5000);
+                break;
+            } else {
+                sleep(500);
+                bluecolor = robot.color.blue();
+                if(robot.color.blue() > 0){
+                    telemetry.addData("Found!", robot.color.blue());
+                    telemetry.update();
+                    Robot_Methods.driveForSecondsAtPower(robot, DRIVE_SPEED, 1);
+                    sleep(5000);
+                    break;
+                } else {
+                    telemetry.addData("Not Found!", robot.color.blue());
+                    telemetry.update();
+                }
+
+            }
+            updateColors();
+            //reverse after hitting
+            Robot_Methods.driveForSecondsAtPower(robot, DRIVE_SPEED, 1);
+            sleep(3000);
+            Robot_Methods.driveForSecondsAtPower(robot, -DRIVE_SPEED, 1.5);
+        }
     }
 
 }
