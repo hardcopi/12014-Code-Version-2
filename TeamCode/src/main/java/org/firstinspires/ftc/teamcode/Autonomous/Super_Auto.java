@@ -72,7 +72,7 @@ public class Super_Auto extends LinearOpMode {
                         encoderDrive(DRIVE_SPEED, 8, 8, 6);      /* Drive forward */
                         encoderDrive(TURN_SPEED, 3.5, -1.5, 2.0);
                         encoderDrive(DRIVE_SPEED, 6, 6, 6);      /* Drive forward */
-                        hitBeacon();
+                        bumpBeaconBlue();
                     }
                 }
 
@@ -236,4 +236,15 @@ public class Super_Auto extends LinearOpMode {
         }
     }
 
+    public void bumpBeaconBlue() {
+        while (opModeIsActive() && robot.color.blue() < COLOR_THRESHOLD) {
+            telemetry.addData("Bump Beacon", "Not Found: " + robot.color.blue());
+            telemetry.update();
+            Robot_Methods.driveForSecondsAtPower(robot, -DRIVE_SPEED, .3); /* Drive Forward 300ms */
+            Robot_Methods.driveForSecondsAtPower(robot, DRIVE_SPEED, .3);  /* Drive Back 300ms */
+            sleep(1000);
+            telemetry.addData("Bump Beacon", "Found: " + robot.color.blue());
+            telemetry.update();
+        }
+    }
 }
