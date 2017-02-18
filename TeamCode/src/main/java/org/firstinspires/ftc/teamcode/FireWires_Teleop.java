@@ -120,7 +120,7 @@ public class FireWires_Teleop extends OpMode {
         }
 
         if (!gamepad1.x & !gamepad1.b) {
-            robot.pusherServo.setPosition(.5);
+            robot.pusherServo.setPosition(0);
         }
 
         /**
@@ -151,6 +151,9 @@ public class FireWires_Teleop extends OpMode {
         }
         if (!gamepad2.b && !gamepad2.a && left2 == 0) {
             robot.move_shoot_servo(SHOOTER_SERVO_DOWN);
+            telemetry.addData("Say", "Servo Down");
+        } else {
+            telemetry.addData("Say", left2);
         }
 
         if (right2 != 0) {
@@ -172,8 +175,8 @@ public class FireWires_Teleop extends OpMode {
 
         /* if left trigger not pressed run at 60% */
         if (gamepad1.right_trigger != 1) {
-            left = left * .6f;
-            right = right * .6f;
+            left = left * 1f;
+            right = right * 1f;
         }
 
         /**

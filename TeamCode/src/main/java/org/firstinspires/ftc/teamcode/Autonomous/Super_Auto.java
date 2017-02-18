@@ -28,13 +28,13 @@ public class Super_Auto extends LinearOpMode {
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double DRIVE_SPEED = 0.30;
+    static final double DRIVE_SPEED = 0.25;
     static final double TURN_SPEED = 0.25;
 
     static final double FLOOR_REFLECTANCE = 0.2;
     static final double LINE_REFLECTANCE = 0.04;
     static final double THRESHOLD_REFLECTANCE = (LINE_REFLECTANCE + FLOOR_REFLECTANCE) / 2;
-    static final double COLOR_THRESHOLD = 2;
+    static final double COLOR_THRESHOLD = 1;
     double reflectance = 0.0;
 
     static int bluecolor;
@@ -69,10 +69,30 @@ public class Super_Auto extends LinearOpMode {
                     if (!particlePref.equalsIgnoreCase(("Do not shoot any particles"))) {
                     }
                     if (!beaconPref.equalsIgnoreCase("Do not activate any beacons")) {
-                        encoderDrive(DRIVE_SPEED, 8, 8, 6);      /* Drive forward */
-                        encoderDrive(TURN_SPEED, 3.5, -1.5, 2.0);
-                        encoderDrive(DRIVE_SPEED, 6, 6, 6);      /* Drive forward */
-                        bumpBeaconBlue();
+                        encoderDrive(DRIVE_SPEED, 8.5, 8.5, 6);      /* Drive forward */
+                        encoderDrive(TURN_SPEED, 3.65, -1.35, 2.0);
+                        encoderDrive(DRIVE_SPEED, 7, 7, 7);      /* Drive forward */
+                        boolean ran = false;
+                        while (opModeIsActive() && robot.color.blue() < COLOR_THRESHOLD) {
+                            if (ran) sleep(4500);
+                            bumpBeacon();
+                            ran = true;
+                        }
+                        encoderDrive(DRIVE_SPEED, -4, -4, 2);
+                        encoderDrive(TURN_SPEED, -1.5, 5.5, 2.0);
+                        encoderDrive(DRIVE_SPEED, 9, 9, 6);      /* Drive forward */
+                        encoderDrive(TURN_SPEED, 2.9, -1.35, 2.0);
+                        encoderDrive(DRIVE_SPEED, 2, 2, 2);
+                        ran = false;
+                        while (opModeIsActive() && robot.color.blue() < COLOR_THRESHOLD) {
+                            if (ran) sleep(4500);
+                            bumpBeacon();
+                            ran = true;
+                        }
+                        encoderDrive(DRIVE_SPEED, -4, -4, 2);
+                        encoderDrive(TURN_SPEED, 5, -2.35, 2.0);
+                        encoderDrive(DRIVE_SPEED, 8, 8, 2);
+                        stop();
                     }
                 }
                 break;
@@ -233,15 +253,12 @@ public class Super_Auto extends LinearOpMode {
         }
     }
 
-    public void bumpBeaconBlue() {
-        while (opModeIsActive() && robot.color.blue() < COLOR_THRESHOLD) {
-            telemetry.addData("Bump Beacon", "Not Found: " + robot.color.blue());
-            telemetry.update();
-            Robot_Methods.driveForSecondsAtPower(robot, -DRIVE_SPEED, .3); /* Drive Forward 300ms */
-            Robot_Methods.driveForSecondsAtPower(robot, DRIVE_SPEED, .3);  /* Drive Back 300ms */
-            sleep(1000);
-            telemetry.addData("Bump Beacon", "Found: " + robot.color.blue());
-            telemetry.update();
-        }
+    public void bumpBeacon() {
+        boolean ran = false;
+        Robot_Methods.driveForSecondsAtPower(robot, -DRIVE_SPEED, .6); /* Drive Forward 300ms */
+        Robot_Methods.driveForSecondsAtPower(robot, DRIVE_SPEED, .4);  /* Drive Back 300ms */
+        telemetry.addData("Bump Beacon", "Blue: " + robot.color.blue());
+        telemetry.addData("Bump Beacon", "Red: " + robot.color.red());
+        telemetry.update();
     }
 }
