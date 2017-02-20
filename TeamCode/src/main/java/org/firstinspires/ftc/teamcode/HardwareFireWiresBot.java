@@ -87,12 +87,12 @@ public class HardwareFireWiresBot
         // Define and Initialize Motors
         if(hwMap.dcMotor.get("left_drive") != null){
             leftMotor   = hwMap.dcMotor.get("left_drive");
-            leftMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
+            leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
 
         }
         if(hwMap.dcMotor.get("right_drive")!=null){
            rightMotor  = hwMap.dcMotor.get("right_drive");
-            rightMotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
+            rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
         }
         if (hwMap.dcMotor.get("intake_motor") != null) {

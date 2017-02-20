@@ -12,7 +12,7 @@ public class FireWires_Teleop extends OpMode {
     private static final float JOYSTICK_GAIN = .2f;
     private static final float SHOOTER_SERVO_UP = -1;
     private static final float SHOOTER_SERVO_DOWN = 1;
-    private static final float DRIVE_SPEED = .6f;
+    private static final float DRIVE_SPEED = 1f;
 
     /* Declare OpMode members. *///
     /**
