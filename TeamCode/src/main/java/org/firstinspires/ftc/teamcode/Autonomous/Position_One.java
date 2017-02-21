@@ -61,50 +61,28 @@ public class Position_One extends LinearOpMode {
         telemetry.update();
         //Initial stuff
 
-        switch (alliance) {
-            case "Blue Alliance":
-                while (opModeIsActive()) {
-                    if (!beaconPref.equalsIgnoreCase("Do not activate any beacons")) {
-                        encoderDrive(DRIVE_SPEED, 14, 14, 6);      /* Drive forward */
-                        shoot2();
-                        encoderDrive(TURN_SPEED, 2, -1, 6);     /* Turn Left */
-                        encoderDrive(DRIVE_SPEED, 30, 30, 15);      /* Drive forward */
-                        boolean drive = false;
-                        bluecolor = 0;
-                        while (opModeIsActive() && bluecolor < COLOR_THRESHOLD) {
-                            if (drive == true) sleep (4000);
-                            if (bluecolor < COLOR_THRESHOLD) {
-                                bumpBeacon();
-                            }
-                            updateColors();
-                            drive = true;
-                        }
-                        encoderDrive(DRIVE_SPEED, -15, -15, 20);      /* Drive forward */
+        while (opModeIsActive()) {
+            switch (alliance) {
+                case "Blue Alliance":
+                        if (!beaconPref.equalsIgnoreCase("Do not activate any beacons")) {
+                            encoderDrive(DRIVE_SPEED, 14, 14, 6);      /* Drive forward */
+                            shoot2();
+                            encoderDrive(TURN_SPEED, 2, -1, 6);     /* Turn Left */
+                            encoderDrive(DRIVE_SPEED, 30, 30, 15);      /* Drive forward */
+                            boolean drive = false;
+
+                            /* Try 3 times before moving on */
+                            bumpBeacon();
+                            sleep(1000);
+                            if (robot.color.blue() < COLOR_THRESHOLD) { sleep(4000); bumpBeacon(); } else { updateColors(); }
+                            if (robot.color.blue() < COLOR_THRESHOLD) { sleep(4000); bumpBeacon(); } else { updateColors(); }
+                            encoderDrive(DRIVE_SPEED, -15, -15, 20);      /* Drive forward */
+                        stop();
                     }
-                    stop();
-                }
-                break;
-            case "Red Alliance":
-                while (opModeIsActive()) {
-                    if (!beaconPref.equalsIgnoreCase("Do not activate any beacons")) {
-                        encoderDrive(DRIVE_SPEED, 14, 14, 6);      /* Drive forward */
-                        shoot2();
-                        encoderDrive(TURN_SPEED, -2, 3, 6);     /* Turn Left */
-                        encoderDrive(DRIVE_SPEED, 30, 30, 15);      /* Drive forward */
-                        boolean drive = false;
-                        bluecolor = 0;
-                        while (opModeIsActive() && bluecolor < COLOR_THRESHOLD) {
-                            if (drive == true) sleep (4000);
-                            if (bluecolor < COLOR_THRESHOLD) {
-                                bumpBeacon();
-                            }
-                            updateColors();
-                            drive = true;
-                        }
-                        encoderDrive(DRIVE_SPEED, -15, -15, 20);      /* Drive forward */
-                    }
-                    stop();
-                }
+                    break;
+                case "Red Alliance":
+                        stop();
+            }
         }
     }
 
@@ -198,6 +176,9 @@ public class Position_One extends LinearOpMode {
     public  void updateColors(){
         bluecolor = robot.color.blue();
         redcolor = robot.color.red();
+        telemetry.addData("Color Sensor", "Blue: " + robot.color.blue());
+        telemetry.addData("Color Sensor", "Red: " + robot.color.red());
+        telemetry.update();
     }
     public void hitBeacon(){
         while(opModeIsActive()) {

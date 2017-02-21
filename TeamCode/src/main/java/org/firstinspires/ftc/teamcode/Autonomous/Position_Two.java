@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.HardwareFireWiresBot;
 
-@Autonomous(name = "Super Auto", group = "FireBot")
-public class Super_Auto extends LinearOpMode {
+@Autonomous(name = "Position Two", group = "FireBot")
+public class Position_Two extends LinearOpMode {
     HardwareFireWiresBot robot = new HardwareFireWiresBot();
     long start_time;
     private ElapsedTime runtime = new ElapsedTime();
@@ -63,64 +63,39 @@ public class Super_Auto extends LinearOpMode {
         //Initial stuff
 
         updateColors();
+        while (opModeIsActive()) {
         switch (alliance) {
             case "Blue Alliance":
-                while (opModeIsActive()) {
-                    if (!particlePref.equalsIgnoreCase(("Do not shoot any particles"))) {
+                if (!particlePref.equalsIgnoreCase(("Do not shoot any particles"))) {
+                }
+                if (!beaconPref.equalsIgnoreCase("Do not activate any beacons")) {
+                    encoderDrive(DRIVE_SPEED, 8.5, 8.5, 6);      /* Drive forward */
+                    shoot2();
+                    encoderDrive(TURN_SPEED, 3.65, -1.35, 2);
+                    encoderDrive(DRIVE_SPEED, 7, 7, 7);      /* Drive forward */
+                        /* Try 3 times before moving on */
+                    bumpBeacon();
+                    sleep(1000);
+                    if (robot.color.blue() < COLOR_THRESHOLD) {
+                        sleep(4000);
+                        bumpBeacon();
+                    } else {
+                        updateColors();
                     }
-                    if (!beaconPref.equalsIgnoreCase("Do not activate any beacons")) {
-                        encoderDrive(DRIVE_SPEED, 8.5, 8.5, 6);      /* Drive forward */
-                        encoderDrive(TURN_SPEED, 3.65, -1.35, 2.0);
-                        encoderDrive(DRIVE_SPEED, 7, 7, 7);      /* Drive forward */
-                        boolean ran = false;
-                        while (opModeIsActive() && robot.color.blue() < COLOR_THRESHOLD) {
-                            if (ran) sleep(4500);
-                            bumpBeacon();
-                            ran = true;
-                        }
-                        encoderDrive(DRIVE_SPEED, -4, -4, 2);
-                        encoderDrive(TURN_SPEED, -1.5, 5.5, 2.0);
-                        encoderDrive(DRIVE_SPEED, 9, 9, 6);      /* Drive forward */
-                        encoderDrive(TURN_SPEED, 2.9, -1.35, 2.0);
-                        encoderDrive(DRIVE_SPEED, 2, 2, 2);
-                        ran = false;
-                        while (opModeIsActive() && robot.color.blue() < COLOR_THRESHOLD) {
-                            if (ran) sleep(4500);
-                            bumpBeacon();
-                            ran = true;
-                        }
-                        encoderDrive(DRIVE_SPEED, -4, -4, 2);
-                        encoderDrive(TURN_SPEED, 5, -2.35, 2.0);
-                        encoderDrive(DRIVE_SPEED, 8, 8, 2);
-                        stop();
+                    if (robot.color.blue() < COLOR_THRESHOLD) {
+                        sleep(4000);
+                        bumpBeacon();
+                    } else {
+                        updateColors();
                     }
+                    encoderDrive(DRIVE_SPEED, -15, -15, 20);      /* Drive forward */
+                    stop();
                 }
                 break;
             case "Red Alliance":
-                encoderDrive(DRIVE_SPEED, 10, 10, 6.0);      /* Drive forward */
-                sleep(1000);
-                encoderDrive(TURN_SPEED, -2, 4, 2.0);
-                sleep(1000);
-                encoderDrive(DRIVE_SPEED,  10, 10, 2.0);      /* Drive forward */
-                telemetry.addData("Red", robot.color.red());
-                telemetry.addData("Blue", robot.color.blue());
-                telemetry.update();
-                while (robot.color.red() < COLOR_THRESHOLD) {
-                    robot.leftMotor.setPower((DRIVE_SPEED * 2));
-                    robot.rightMotor.setPower((DRIVE_SPEED * 2));
-                    sleep(1000);
-                    telemetry.addData("Blue", robot.color.blue());
-                    telemetry.addData("Red", robot.color.red());
-                    telemetry.update();
-                    robot.leftMotor.setPower(-DRIVE_SPEED);
-                    robot.rightMotor.setPower(-DRIVE_SPEED);
-                    sleep(500);
-                    robot.leftMotor.setPower(0);
-                    robot.rightMotor.setPower(0);
-                    sleep(6000);
-                }
-                break;
 
+                break;
+        }
         }
 
         // Stop all motors
@@ -132,21 +107,23 @@ public class Super_Auto extends LinearOpMode {
     public void shoot2(){
         robot.leftShooter.setPower(SHOOTER_POWER);
         robot.rightShooter.setPower(SHOOTER_POWER);
-        sleep(2000);
+        sleep(1000);
         robot.shootServo.setPosition(-1);
         sleep(500);
         robot.shootServo.setPosition(1);
         robot.leftShooter.setPower(0);
         robot.rightShooter.setPower(0);
-        sleep(1000);
+        sleep(300);
         /* Fire again! */
         robot.shootServo.setPosition(1);
-        sleep(2000);
+        sleep(1000);
         robot.leftShooter.setPower(SHOOTER_POWER);
         robot.rightShooter.setPower(SHOOTER_POWER);
         sleep(1000);
         robot.shootServo.setPosition(-1);
         sleep(1000);
+        robot.leftShooter.setPower(0);
+        robot.rightShooter.setPower(0);
     }
     private void getAutonomousPrefs()
     {
@@ -159,8 +136,7 @@ public class Super_Auto extends LinearOpMode {
     }
 
     public void encoderDrive(double speed,
-                             double leftInches, double rightInches,
-                             double timeoutS) {
+                             double leftInches, double rightInches, float timeoutS) {
         int newLeftTarget;
         int newRightTarget;
 
@@ -218,6 +194,9 @@ public class Super_Auto extends LinearOpMode {
     public  void updateColors(){
         bluecolor = robot.color.blue();
         redcolor = robot.color.red();
+        telemetry.addData("Color Sensor", "Blue: " + robot.color.blue());
+        telemetry.addData("Color Sensor", "Red: " + robot.color.red());
+        telemetry.update();
     }
     public void hitBeacon(){
         while(opModeIsActive()) {
@@ -255,8 +234,8 @@ public class Super_Auto extends LinearOpMode {
 
     public void bumpBeacon() {
         boolean ran = false;
-        Robot_Methods.driveForSecondsAtPower(robot, -DRIVE_SPEED, .6); /* Drive Forward 300ms */
-        Robot_Methods.driveForSecondsAtPower(robot, DRIVE_SPEED, .4);  /* Drive Back 300ms */
+        Robot_Methods.driveForSecondsAtPower(robot, -.3, .6); /* Drive Forward 300ms */
+        Robot_Methods.driveForSecondsAtPower(robot, .3, .4);  /* Drive Back 300ms */
         telemetry.addData("Bump Beacon", "Blue: " + robot.color.blue());
         telemetry.addData("Bump Beacon", "Red: " + robot.color.red());
         telemetry.update();
