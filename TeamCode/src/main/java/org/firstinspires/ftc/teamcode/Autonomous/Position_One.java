@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-
+import java.util.*;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -27,7 +27,7 @@ public class Position_One extends LinearOpMode {
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double DRIVE_SPEED = 1;
+    static final double DRIVE_SPEED = 1.0;
     static final double TURN_SPEED = 0.5;
 
     static final double FLOOR_REFLECTANCE = 0.2;
@@ -61,44 +61,261 @@ public class Position_One extends LinearOpMode {
         telemetry.update();
         //Initial stuff
 
-        while (opModeIsActive()) {
-            switch (alliance) {
-                case "Blue Alliance":
-                        if (!beaconPref.equalsIgnoreCase("Do not activate any beacons")) {
-                            encoderDrive(DRIVE_SPEED, 14, 14, 6);      /* Drive forward */
-                            shoot2();
-                            encoderDrive(TURN_SPEED, 2, -1, 6);     /* Turn Left */
-                            encoderDrive(DRIVE_SPEED, 30, 30, 15);      /* Drive forward */
-                            boolean drive = false;
-
-                            /* Try 3 times before moving on */
+        switch (alliance) {
+            case "Blue Alliance":
+                while (opModeIsActive()) {
+                    encoderDrive(DRIVE_SPEED, 14, 14, 6);      /* Drive forward */
+                    shoot2();
+                    encoderDrive(DRIVE_SPEED, 1, 1, 6);
+                    sleep(300);
+                    encoderDrive(TURN_SPEED, 2, -1, 6);     /* Turn Left */
+                    encoderDrive(DRIVE_SPEED, 25, 25, 15);      /* Drive forward */
+                    boolean drive = false;
+                    bluecolor = 0;
+                    while (opModeIsActive() && bluecolor < COLOR_THRESHOLD) {
+                        if (drive == true) sleep(2000);
+                        if (bluecolor < COLOR_THRESHOLD) {
                             bumpBeacon();
-                            sleep(1000);
-                            if (robot.color.blue() < COLOR_THRESHOLD) { sleep(4000); bumpBeacon(); } else { updateColors(); }
-                            if (robot.color.blue() < COLOR_THRESHOLD) { sleep(4000); bumpBeacon(); } else { updateColors(); }
-                            encoderDrive(DRIVE_SPEED, -15, -15, 20);      /* Drive forward */
-                        stop();
+                            sleep(2000);
+                        }
+                        updateColors();
+                        drive = true;
                     }
-                    break;
-                case "Red Alliance":
-                        stop();
-            }
+
+                    encoderDrive(DRIVE_SPEED, -15, -15, 20);
+//                    if (!beaconPref.equalsIgnoreCase("Do not activate any beacons")) {
+//                        if(beaconPref.equalsIgnoreCase("Shoot 2 particles")) {
+//                            encoderDrive(DRIVE_SPEED, 14, 14, 6);      /* Drive forward */
+//                            shoot2();
+//                            encoderDrive(TURN_SPEED, 2, -1, 6);     /* Turn Left */
+//                            encoderDrive(DRIVE_SPEED, 30, 30, 15);      /* Drive forward */
+//                            boolean drive = false;
+//                            bluecolor = 0;
+//                            while (opModeIsActive() && bluecolor < COLOR_THRESHOLD) {
+//                                if (drive == true) sleep(2000);
+//                                if (bluecolor < COLOR_THRESHOLD) {
+//                                    bumpBeacon();
+//                                    sleep(2000);
+//                                }
+//                                updateColors();
+//                                drive = true;
+//                            }
+//                            encoderDrive(DRIVE_SPEED, -15, -15, 20);      /* Drive forward */
+//                        }
+//                        else if(beaconPref.equalsIgnoreCase("Shoot 1 particle")) {
+//                            encoderDrive(DRIVE_SPEED, 14, 14, 6);      /* Drive forward */
+//                            shoot1();
+//                            encoderDrive(TURN_SPEED, 2, -1, 6);     /* Turn Left */
+//                            encoderDrive(DRIVE_SPEED, 30, 30, 15);      /* Drive forward */
+//                            boolean drive = false;
+//                            bluecolor = 0;
+//                            while (opModeIsActive() && bluecolor < COLOR_THRESHOLD) {
+//                                if (drive == true) sleep(2000);
+//                                if (bluecolor < COLOR_THRESHOLD) {
+//                                    bumpBeacon();
+//                                    sleep(2000);
+//                                }
+//                                updateColors();
+//                                drive = true;
+//                            }
+//                            encoderDrive(DRIVE_SPEED, -15, -15, 20);      /* Drive forward */
+//                        }
+//                        else if(beaconPref.equalsIgnoreCase("Don't shoot any particles")) {
+//                            encoderDrive(DRIVE_SPEED, 14, 14, 6);      /* Drive forward */
+//                            encoderDrive(TURN_SPEED, 2, -1, 6);     /* Turn Left */
+//                            encoderDrive(DRIVE_SPEED, 30, 30, 15);      /* Drive forward */
+//                            boolean drive = false;
+//                            bluecolor = 0;
+//                            while (opModeIsActive() && bluecolor < COLOR_THRESHOLD) {
+//                                if (drive == true) sleep(2000);
+//                                if (bluecolor < COLOR_THRESHOLD) {
+//                                    bumpBeacon();
+//                                    sleep(2000);
+//                                }
+//                                updateColors();
+//                                drive = true;
+//                            }
+//                            encoderDrive(DRIVE_SPEED, -15, -15, 20);      /* Drive forward */
+//                        }
+//
+//                    }
+//                    else{
+//                        if(beaconPref.equalsIgnoreCase("Shoot 2 particles")) {
+//                            encoderDrive(DRIVE_SPEED, 14, 14, 6);      /* Drive forward */
+//                            shoot2();
+//                            encoderDrive(TURN_SPEED, 2, -1, 6);     /* Turn Left */
+//                            encoderDrive(DRIVE_SPEED, 30, 30, 15);      /* Drive forward */
+//                            boolean drive = false;
+//                            bluecolor = 0;
+//                            while (opModeIsActive() && bluecolor < COLOR_THRESHOLD) {
+//                                if (drive == true) sleep(2000);
+//                                if (bluecolor < COLOR_THRESHOLD) {
+//                                    bumpBeacon();
+//                                    sleep(2000);
+//                                }
+//                                updateColors();
+//                                drive = true;
+//                            }
+//                            encoderDrive(DRIVE_SPEED, -15, -15, 20);      /* Drive forward */
+//                        }
+//                        else if(beaconPref.equalsIgnoreCase("Shoot 1 particle")) {
+//                                encoderDrive(DRIVE_SPEED, 14, 14, 6);      /* Drive forward */
+//                                shoot1();
+//                                encoderDrive(TURN_SPEED, 2, -1, 6);     /* Turn Left */
+//                                encoderDrive(DRIVE_SPEED, 30, 30, 15);      /* Drive forward */
+//                                boolean drive = false;
+//                                bluecolor = 0;
+//                                while (opModeIsActive() && bluecolor < COLOR_THRESHOLD) {
+//                                    if (drive == true) sleep(2000);
+//                                    if (bluecolor < COLOR_THRESHOLD) {
+//                                        bumpBeacon();
+//                                        sleep(2000);
+//                                    }
+//                                    updateColors();
+//                                    drive = true;
+//                                }
+//                                encoderDrive(DRIVE_SPEED, -15, -15, 20);      /* Drive forward */
+//
+//                        }
+//                    }
+                    stop();
+                }
+                break;
+            case "Red Alliance":
+                while (opModeIsActive()) {
+                    encoderDrive(DRIVE_SPEED, 12, 12, 6);      /* Drive forward */
+                    shoot2();
+                    encoderDrive(DRIVE_SPEED, 1, 1, 6);
+                    sleep(300);
+                    encoderDrive(.4, -4, 2, 6);     /* Turn Left */
+                    encoderDrive(DRIVE_SPEED, 30, 30, 15);      /* Drive forward */
+                    boolean drive = false;
+                    redcolor = 0;
+                    while (opModeIsActive() && redcolor < COLOR_THRESHOLD) {
+                        if (drive == true) sleep(2000);
+                        if (redcolor < COLOR_THRESHOLD) {
+                            bumpBeacon();
+                            sleep(2000);
+                        }
+                        updateColors();
+                        drive = true;
+                    }
+
+                    encoderDrive(DRIVE_SPEED, -15, -15, 20);
+//                    if (!beaconPref.equalsIgnoreCase("Do not activate any beacons")) {
+//                        if(beaconPref.equalsIgnoreCase("Shoot 2 particles")) {
+//                            encoderDrive(DRIVE_SPEED, 14, 14, 6);      /* Drive forward */
+//                            shoot2();
+//                            encoderDrive(TURN_SPEED, -1, 2, 6);     /* Turn Left */
+//                            encoderDrive(DRIVE_SPEED, 30, 30, 15);      /* Drive forward */
+//                            boolean drive = false;
+//                            redcolor = 0;
+//                            while (opModeIsActive() && redcolor < COLOR_THRESHOLD) {
+//                                if (drive == true) sleep(2000);
+//                                if (redcolor < COLOR_THRESHOLD) {
+//                                    bumpBeacon();
+//                                    sleep(2000);
+//                                }
+//                                updateColors();
+//                                drive = true;
+//                            }
+//                            encoderDrive(DRIVE_SPEED, -15, -15, 20);      /* Drive forward */
+//                        }
+//                        else if(beaconPref.equalsIgnoreCase("Shoot 1 particle")) {
+//                            encoderDrive(DRIVE_SPEED, 14, 14, 6);      /* Drive forward */
+//                            shoot1();
+//                            encoderDrive(TURN_SPEED, -1,2, 6);     /* Turn Left */
+//                            encoderDrive(DRIVE_SPEED, 30, 30, 15);      /* Drive forward */
+//                            boolean drive = false;
+//                            redcolor = 0;
+//                            while (opModeIsActive() && redcolor < COLOR_THRESHOLD) {
+//                                if (drive == true) sleep(2000);
+//                                if (redcolor < COLOR_THRESHOLD) {
+//                                    bumpBeacon();
+//                                    sleep(2000);
+//                                }
+//                                updateColors();
+//                                drive = true;
+//                            }
+//                            encoderDrive(DRIVE_SPEED, -15, -15, 20);      /* Drive forward */
+//                        }
+//                        else if(beaconPref.equalsIgnoreCase("Don't shoot any particles")) {
+//                            encoderDrive(DRIVE_SPEED, 14, 14, 6);      /* Drive forward */
+//                            encoderDrive(TURN_SPEED, -1, 2, 6);     /* Turn Left */
+//                            encoderDrive(DRIVE_SPEED, 30, 30, 15);      /* Drive forward */
+//                            boolean drive = false;
+//                            redcolor = 0;
+//                            while (opModeIsActive() && redcolor < COLOR_THRESHOLD) {
+//                                if (drive == true) sleep(2000);
+//                                if (redcolor < COLOR_THRESHOLD) {
+//                                    bumpBeacon();
+//                                    sleep(2000);
+//                                }
+//                                updateColors();
+//                                drive = true;
+//                            }
+//                            encoderDrive(DRIVE_SPEED, -15, -15, 20);      /* Drive forward */
+//                        }
+//
+//                    }
+//                    else{
+//                        if(beaconPref.equalsIgnoreCase("Shoot 2 particles")) {
+//                            encoderDrive(DRIVE_SPEED, 14, 14, 6);      /* Drive forward */
+//                            shoot2();
+//                            encoderDrive(TURN_SPEED, -1, 2, 6);     /* Turn Left */
+//                            encoderDrive(DRIVE_SPEED, 30, 30, 15);      /* Drive forward */
+//                            boolean drive = false;
+//                            redcolor = 0;
+//                            while (opModeIsActive() && redcolor < COLOR_THRESHOLD) {
+//                                if (drive == true) sleep(2000);
+//                                if (redcolor < COLOR_THRESHOLD) {
+//                                    bumpBeacon();
+//                                    sleep(2000);
+//                                }
+//                                updateColors();
+//                                drive = true;
+//                            }
+//                            encoderDrive(DRIVE_SPEED, -15, -15, 20);      /* Drive forward */
+//                        }
+//                        else if(beaconPref.equalsIgnoreCase("Shoot 1 particle")) {
+//                            encoderDrive(DRIVE_SPEED, 14, 14, 6);      /* Drive forward */
+//                            shoot1();
+//                            encoderDrive(TURN_SPEED, -1, 2, 6);     /* Turn Left */
+//                            encoderDrive(DRIVE_SPEED, 30, 30, 15);      /* Drive forward */
+//                            boolean drive = false;
+//                            redcolor = 0;
+//                            while (opModeIsActive() && redcolor < COLOR_THRESHOLD) {
+//                                if (drive == true) sleep(2000);
+//                                if (redcolor < COLOR_THRESHOLD) {
+//                                    bumpBeacon();
+//                                    sleep(2000);
+//                                }
+//                                updateColors();
+//                                drive = true;
+//                            }
+//                            encoderDrive(DRIVE_SPEED, -15, -15, 20);      /* Drive forward */
+//
+//                        }
+//                    }
+                    stop();
+                }
+                break;
         }
     }
 
     public void shoot2(){
         robot.leftShooter.setPower(SHOOTER_POWER);
         robot.rightShooter.setPower(SHOOTER_POWER);
-        sleep(1000);
+        sleep(2000);
         robot.shootServo.setPosition(-1);
         sleep(500);
         robot.shootServo.setPosition(1);
         robot.leftShooter.setPower(0);
         robot.rightShooter.setPower(0);
-        sleep(300);
+        sleep(1000);
         /* Fire again! */
         robot.shootServo.setPosition(1);
-        sleep(1000);
+        sleep(2000);
         robot.leftShooter.setPower(SHOOTER_POWER);
         robot.rightShooter.setPower(SHOOTER_POWER);
         sleep(1000);
@@ -106,6 +323,20 @@ public class Position_One extends LinearOpMode {
         sleep(1000);
         robot.leftShooter.setPower(0);
         robot.rightShooter.setPower(0);
+    }
+    public void shoot1(){
+        robot.leftShooter.setPower(SHOOTER_POWER);
+        robot.rightShooter.setPower(SHOOTER_POWER);
+        sleep(2000);
+        robot.shootServo.setPosition(-1);
+        sleep(500);
+        robot.shootServo.setPosition(1);
+        robot.leftShooter.setPower(0);
+        robot.rightShooter.setPower(0);
+        sleep(1000);
+
+        robot.shootServo.setPosition(1);
+
     }
     private void getAutonomousPrefs()
     {
@@ -166,7 +397,7 @@ public class Position_One extends LinearOpMode {
 
             //  sleep(250);   // optional pause after each move
         }
-    }//
+    }
     public int getRedColor(){
         return robot.color.red();
     }
@@ -176,9 +407,6 @@ public class Position_One extends LinearOpMode {
     public  void updateColors(){
         bluecolor = robot.color.blue();
         redcolor = robot.color.red();
-        telemetry.addData("Color Sensor", "Blue: " + robot.color.blue());
-        telemetry.addData("Color Sensor", "Red: " + robot.color.red());
-        telemetry.update();
     }
     public void hitBeacon(){
         while(opModeIsActive()) {
@@ -216,10 +444,13 @@ public class Position_One extends LinearOpMode {
 
     public void bumpBeacon() {
         boolean ran = false;
-        Robot_Methods.driveForSecondsAtPower(robot, -.3, .6); /* Drive Forward 300ms */
-        Robot_Methods.driveForSecondsAtPower(robot, .3, .4);  /* Drive Back 300ms */
+
+        Robot_Methods.driveForSecondsAtPower(robot, -.5, 1); /* Drive Forward 300ms */
+        Robot_Methods.driveForSecondsAtPower(robot, .5, .4);  /* Drive Back 300ms */
         telemetry.addData("Bump Beacon", "Blue: " + robot.color.blue());
         telemetry.addData("Bump Beacon", "Red: " + robot.color.red());
         telemetry.update();
+
     }
+
 }
