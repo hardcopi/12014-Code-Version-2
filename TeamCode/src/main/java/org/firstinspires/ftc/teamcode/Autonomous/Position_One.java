@@ -166,7 +166,7 @@ public class Position_One extends LinearOpMode {
 
             //  sleep(250);   // optional pause after each move
         }
-    }
+    }//
     public int getRedColor(){
         return robot.color.red();
     }
