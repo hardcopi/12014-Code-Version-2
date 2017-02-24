@@ -16,7 +16,7 @@ public class Position_Two extends LinearOpMode {
     HardwareFireWiresBot robot = new HardwareFireWiresBot();
     long start_time;
     private ElapsedTime runtime = new ElapsedTime();
-    static final double SHOOTER_POWER = .25;
+    static final double SHOOTER_POWER = .28;
     private String particlePref;
     private String beaconPref;
     private String capBallPref;
@@ -28,8 +28,8 @@ public class Position_Two extends LinearOpMode {
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double DRIVE_SPEED = 0.25;
-    static final double TURN_SPEED = 0.25;
+    static final double DRIVE_SPEED = .5;
+    static final double TURN_SPEED = 0.5;
 
     static final double FLOOR_REFLECTANCE = 0.2;
     static final double LINE_REFLECTANCE = 0.04;
@@ -62,57 +62,133 @@ public class Position_Two extends LinearOpMode {
         telemetry.update();
         //Initial stuff
 
-        updateColors();
-        while (opModeIsActive()) {
         switch (alliance) {
             case "Blue Alliance":
-                if (!particlePref.equalsIgnoreCase(("Do not shoot any particles"))) {
-                }
-                if (!beaconPref.equalsIgnoreCase("Do not activate any beacons")) {
+                while (opModeIsActive()) {
                     encoderDrive(DRIVE_SPEED, 8.5, 8.5, 6);      /* Drive forward */
-                    shoot2();
-                    encoderDrive(TURN_SPEED, 3.65, -1.35, 2);
-                    encoderDrive(DRIVE_SPEED, 7, 7, 7);      /* Drive forward */
-                        /* Try 3 times before moving on */
-                    bumpBeacon();
-                    sleep(1000);
-                    if (robot.color.blue() < COLOR_THRESHOLD) {
-                        sleep(4000);
-                        bumpBeacon();
-                    } else {
-                        updateColors();
+                    if(particlePref.equalsIgnoreCase("Shoot 1 Particle")){
+                        shoot1();
                     }
-                    if (robot.color.blue() < COLOR_THRESHOLD) {
-                        sleep(4000);
-                        bumpBeacon();
-                    } else {
-                        updateColors();
+                    else if (particlePref.equalsIgnoreCase("Shoot 2 Particles")){
+                        shoot2();
                     }
-                    encoderDrive(DRIVE_SPEED, -15, -15, 20);      /* Drive forward */
+                    if(beaconPref.equalsIgnoreCase("Do not activate any beacons")){
+                        if(parkingPref.equalsIgnoreCase("Park on CORNER vortex")){
+                            encoderDrive(TURN_SPEED, 5, -7.5, 2);
+                            encoderDrive(DRIVE_SPEED, 10, 10, 2);
+                        }
+
+                    }
+                    else {
+                        encoderDrive(DRIVE_SPEED, 5, 5, 7);
+                        encoderDrive(TURN_SPEED, 5,-3.5, 2);
+                        robot.intake(.5f);
+                        encoderDrive(DRIVE_SPEED, 20, 20, 7);      /* Drive forward */
+                            /* Try 3 times before moving on */
+                        bumpBeacon();
+                        sleep(1000);
+                        boolean drive = false;
+                        bluecolor = 0;
+                        while (opModeIsActive() && bluecolor < COLOR_THRESHOLD) {
+                            if (drive == true) sleep(2200);
+                            if (bluecolor < COLOR_THRESHOLD) {
+                                bumpBeacon();
+                                sleep(2400);
+                            }
+                            updateColors();
+                            drive = true;
+                        }
+
+                        encoderDrive(DRIVE_SPEED, -16, -16, 20);
+                    }
+
                     stop();
                 }
                 break;
             case "Red Alliance":
+                while (opModeIsActive()) {
+                    encoderDrive(DRIVE_SPEED, 8.5, 8.5, 6);      /* Drive forward */
+                    if(particlePref.equalsIgnoreCase("Shoot 1 Particle")){
+                        shoot1();
+                    }
+                    else if (particlePref.equalsIgnoreCase("Shoot 2 Particles")){
+                        shoot2();
+                    }
+                    if(beaconPref.equalsIgnoreCase("Do not activate any beacons")){
+                        if(parkingPref.equalsIgnoreCase("Park on CORNER vortex")){
+                            encoderDrive(TURN_SPEED, 5, -7.5, 2);
+                            encoderDrive(DRIVE_SPEED, 7, 7, 2);
+                        }
+                    }
+                    else if(beaconPref.equalsIgnoreCase("Activate the 1st beacon")){
+                        encoderDrive(DRIVE_SPEED, 5, 5, 7);
+                        encoderDrive(TURN_SPEED, -3.5, 5, 2);
+                        robot.intake(.5f);
+                        encoderDrive(DRIVE_SPEED, 20, 20, 7);      /* Drive forward */
+                            /* Try 3 times before moving on */
+                        bumpBeacon();
+                        sleep(1000);
+                        boolean drive = false;
+                        redcolor = 0;
+                        while (opModeIsActive() && redcolor < COLOR_THRESHOLD) {
+                            if (drive == true) sleep(2200);
+                            if (redcolor < COLOR_THRESHOLD) {
+                                bumpBeacon();
+                                sleep(2400);
+                            }
+                            updateColors();
+                            drive = true;
+                        }
 
+                        encoderDrive(DRIVE_SPEED, -16, -16, 20);
+                    }
+                    else{
+                        encoderDrive(DRIVE_SPEED, 5, 5, 7);
+                        encoderDrive(TURN_SPEED, -4, 5, 2);
+                        robot.intake(.5f);
+                        encoderDrive(DRIVE_SPEED, 20, 20, 7);      /* Drive forward */
+                            /* Try 3 times before moving on */
+                        bumpBeacon();
+                        sleep(1000);
+                        boolean drive = false;
+                        redcolor = 0;
+                        while (opModeIsActive() && redcolor < COLOR_THRESHOLD) {
+
+                            if (redcolor < COLOR_THRESHOLD) {
+                                bumpBeacon();
+                                sleep(2400);
+                            }
+                            updateColors();
+                            if(redcolor > COLOR_THRESHOLD) break;
+                            if (drive == true) sleep(2200);
+                            updateColors();
+                            drive = true;
+                        }
+                        encoderDrive(DRIVE_SPEED, -5, -5, 7);
+                        sleep(100);
+                        encoderDrive(DRIVE_SPEED, 5, -5, 7);
+                        encoderDrive(DRIVE_SPEED, 10, 10, 7);
+                    }
+
+                    stop();
+                }
                 break;
         }
-        }
-
-        // Stop all motors
-        robot.leftMotor.setPower(0);
-        robot.rightMotor.setPower(0);
-
     }
 
     public void shoot2(){
         robot.leftShooter.setPower(SHOOTER_POWER);
         robot.rightShooter.setPower(SHOOTER_POWER);
-        sleep(1000);
+        sleep(1500);
         robot.shootServo.setPosition(-1);
         sleep(500);
         robot.shootServo.setPosition(1);
         robot.leftShooter.setPower(0);
         robot.rightShooter.setPower(0);
+        sleep(300);
+        robot.shootServo.setPosition(-1);
+        sleep(500);
+        robot.shootServo.setPosition(1);
         sleep(300);
         /* Fire again! */
         robot.shootServo.setPosition(1);
@@ -124,6 +200,21 @@ public class Position_Two extends LinearOpMode {
         sleep(1000);
         robot.leftShooter.setPower(0);
         robot.rightShooter.setPower(0);
+    }
+
+    public void shoot1(){
+        robot.leftShooter.setPower(SHOOTER_POWER);
+        robot.rightShooter.setPower(SHOOTER_POWER);
+        sleep(2000);
+        robot.shootServo.setPosition(-1);
+        sleep(500);
+        robot.shootServo.setPosition(1);
+        robot.leftShooter.setPower(0);
+        robot.rightShooter.setPower(0);
+        sleep(1000);
+
+        robot.shootServo.setPosition(1);
+
     }
     private void getAutonomousPrefs()
     {
@@ -194,9 +285,6 @@ public class Position_Two extends LinearOpMode {
     public  void updateColors(){
         bluecolor = robot.color.blue();
         redcolor = robot.color.red();
-        telemetry.addData("Color Sensor", "Blue: " + robot.color.blue());
-        telemetry.addData("Color Sensor", "Red: " + robot.color.red());
-        telemetry.update();
     }
     public void hitBeacon(){
         while(opModeIsActive()) {
@@ -234,10 +322,13 @@ public class Position_Two extends LinearOpMode {
 
     public void bumpBeacon() {
         boolean ran = false;
-        Robot_Methods.driveForSecondsAtPower(robot, -.3, .6); /* Drive Forward 300ms */
-        Robot_Methods.driveForSecondsAtPower(robot, .3, .4);  /* Drive Back 300ms */
+
+        Robot_Methods.driveForSecondsAtPower(robot, -.5, 1); /* Drive Forward 300ms */
+        Robot_Methods.driveForSecondsAtPower(robot, .5, .4);  /* Drive Back 300ms */
         telemetry.addData("Bump Beacon", "Blue: " + robot.color.blue());
         telemetry.addData("Bump Beacon", "Red: " + robot.color.red());
         telemetry.update();
+
     }
+
 }
