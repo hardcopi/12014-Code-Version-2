@@ -30,7 +30,7 @@ public class HardwareFireWiresBot
 
     public DcMotor r = null;
     /* DC Motors */
-    public DcMotor intakeMotor, leftShooter, rightShooter, leftMotor, rightMotor, leftFront, rightFront = null;
+    public DcMotor intakeMotor, leftShooter, rightShooter, leftMotor, rightMotor, leftFront, strafeMotor, rightFront = null;
     public ArrayList<DcMotor> motorArray = new ArrayList<DcMotor>(Arrays.asList(
             leftMotor, rightMotor, intakeMotor, leftShooter, rightShooter));
 
@@ -106,6 +106,11 @@ public class HardwareFireWiresBot
 
         }
 
+        if(hwMap.dcMotor.get("strafe_motor")!=null){
+            strafeMotor  = hwMap.dcMotor.get("strafe_motor");
+            strafeMotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
+
+        }
 
         if (hwMap.dcMotor.get("intake_motor") != null) {
             intakeMotor = hwMap.dcMotor.get("intake_motor");
@@ -237,6 +242,15 @@ public class HardwareFireWiresBot
      */
     public void intake(float power) {
         intakeMotor.setPower(power);
+    }
+
+    /**
+     * Strafe right and left
+     *
+     * @param power
+     */
+    public void strafe(float power) {
+        strafeMotor.setPower(power);
     }
 
     /**

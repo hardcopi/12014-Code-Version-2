@@ -72,60 +72,33 @@ public class FireWires_Teleop extends OpMode {
         if(gamepad1.dpad_up) {
             left = -DRIVE_SPEED;
             right = -DRIVE_SPEED;
-            say("All Forward");
         }
         if(gamepad1.dpad_down){
             left = DRIVE_SPEED;
             right = DRIVE_SPEED;
-            say("All Backward");
         }
         if(gamepad1.dpad_right){
             right = DRIVE_SPEED;
             left = 0;
-            say("All Right");
         }
         if(gamepad1.dpad_left){
             left = DRIVE_SPEED;
             right = 0;
-            say("All Left");
         }
 
-        /**
-         * Turn intake on at 100% to fix stuck balls
-         */
-        if (gamepad2.right_trigger == 1) {
-            robot.intake(INTAKE_POWER_REVERSE);
-        }
 
-        /**
-         * Turn intake on at 100% for normal intake
-         */
-        if (gamepad2.left_trigger == 1) {
-            robot.intake(INTAKE_POWER);
-        }
 
-        /**
-         * Turn intake off if bumpers not pressed
-         */
-        if (gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0) {
-            robot.intake(0);
-        }
+        if (!gamepad1.x & gamepad1.b)       { robot.pusherServo.setPosition(.3); }
+        if (gamepad1.x & !gamepad1.b)       { robot.pusherServo.setPosition(.7); }
+        if (!gamepad1.x & !gamepad1.b)      { robot.pusherServo.setPosition(0); }
+        if (gamepad1.right_trigger == 1)    { robot.strafe(1); }
+        if (gamepad1.left_trigger == 1)     { robot.strafe(-1); }
 
-        if (!gamepad1.x & gamepad1.b) {
-            robot.pusherServo.setPosition(.3);
-        }
 
-        if (gamepad1.x & !gamepad1.b) {
-            robot.pusherServo.setPosition(.7);
-        }
+        if (gamepad2.right_trigger == 1) { robot.intake(INTAKE_POWER_REVERSE); }
+        if (gamepad2.left_trigger == 1) { robot.intake(INTAKE_POWER); }
+        if (gamepad2.left_trigger == 0 && gamepad2.right_trigger == 0) { robot.intake(0); }
 
-        if (!gamepad1.x & !gamepad1.b) {
-            robot.pusherServo.setPosition(0);
-        }
-
-        /**
-         * Fire
-         */
         if (gamepad2.a || gamepad2.x) {
             if (gamepad2.a) {
                 robot.fire();
@@ -165,18 +138,6 @@ public class FireWires_Teleop extends OpMode {
 
         if (left2 != 0) {
             robot.shootServo.setPosition(left2);
-        }
-
-        /* if left trigger not pressed run at 60% */
-        if (gamepad1.left_trigger == 1) {
-            left = left * .3f;
-            right = right * .3f;
-        }
-
-        /* if left trigger not pressed run at 60% */
-        if (gamepad1.right_trigger != 1) {
-            left = left * 1f;
-            right = right * 1f;
         }
 
         /**
